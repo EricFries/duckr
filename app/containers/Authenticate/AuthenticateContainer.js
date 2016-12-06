@@ -1,15 +1,31 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { Authenticate } from 'components'
 import auth from 'helpers/auth'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+// Creates an object with everything exported form file as a property
+import * as userActionCreators from 'redux/modules/users'
 
 const AuthenticateContainer = React.createClass({
+  propTypes: {
+    isFetching: PropTypes.bool.isRequired,
+    error: PropTypes.string.isRequired,
+    fetchingUser: PropTypes.func.isRequired,
+    fetchingUserFailure: PropTypes.func.isRequired,
+    fetchingUserSuccess: PropTypes.func.isRequired,
+  },
+
   handleAuth () {
+    this.props.fetchingUser()
     auth().then((user) => {
-      console.log(user)
+      this.props.fetchingUserSuccess(user.uid, user, Date.now())
+      this.props.authUser(user.uid)
     })
+      .catch((error) => this.props.fetchUserFailure(error))
   },
 
   render () {
+    console.log(this.props.isFetching)
     return (
       <Authenticate
         isFetching={false}
@@ -18,4 +34,24 @@ const AuthenticateContainer = React.createClass({
     )
   },
 })
-export default AuthenticateContainer
+
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    isFetching: state.isFetching,
+    error: state.error,
+  }
+}
+
+// This binds the dispatch function to the userActionCreators object and makes
+// the resulting function available as props.
+// The first argument must be an object whose values are
+// action creators.  that's why we import like we do above.
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators(userActionCreators, dispatch)
+}
+// Connect returns a function, that functiono accepts
+// a component as an argument.
+// mapStateToProps just passes in the parts of the state the component
+// needs as props.
+export default connect(mapStateToProps, mapDispatchToProps)(AuthenticateContainer)
