@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import { Authenticate } from 'components'
-import auth from 'helpers/auth'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 // Creates an object with everything exported form file as a property
@@ -10,18 +9,11 @@ const AuthenticateContainer = React.createClass({
   propTypes: {
     isFetching: PropTypes.bool.isRequired,
     error: PropTypes.string.isRequired,
-    fetchingUser: PropTypes.func.isRequired,
-    fetchingUserFailure: PropTypes.func.isRequired,
-    fetchingUserSuccess: PropTypes.func.isRequired,
+    fetchAndHandleAuthUser: PropTypes.func.isRequired,
   },
 
   handleAuth () {
-    this.props.fetchingUser()
-    auth().then((user) => {
-      this.props.fetchingUserSuccess(user.uid, user, Date.now())
-      this.props.authUser(user.uid)
-    })
-      .catch((error) => this.props.fetchUserFailure(error))
+    this.props.fetchAndHandleAuthUser()
   },
 
   render () {
