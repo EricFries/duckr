@@ -9,3 +9,12 @@ export default function auth () {
     }, 2000)
   })
 }
+
+export function checkIfAuthed (store) {
+    // ignore firebase for now
+    return store.getState().isAuthed
+}
+
+export function logout () {
+    console.log('log out')
+}

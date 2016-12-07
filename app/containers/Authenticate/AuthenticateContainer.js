@@ -12,8 +12,14 @@ const AuthenticateContainer = React.createClass({
     fetchAndHandleAuthUser: PropTypes.func.isRequired,
   },
 
-  handleAuth () {
+  contextTypes: {
+    router: PropTypes.object.isRequired,
+  },
+
+  handleAuth (e) {
+    e.preventDefault();
     this.props.fetchAndHandleAuthUser()
+      .then(() => { this.context.router.replace('feed') })
   },
 
   render () {
