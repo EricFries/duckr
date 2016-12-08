@@ -16,6 +16,7 @@ export function authUser (uid) {
 }
 
 function unauthUser () {
+  console.log('unauthUser')
   return {
     type: UNAUTH_USER,
   }
@@ -66,7 +67,7 @@ export function fetchAndHandleAuthUser () {
 export function logoutAndUnauth () {
   return function (dispatch) {
     logout()
-    dispatch(unauthUser)
+    dispatch(unauthUser())
   }
 }
 
@@ -103,12 +104,14 @@ const initialState = {
 export default function users (state = initialState, action) {
   switch (action.type) {
     case AUTH_USER :
+     console.log('user match')
       return {
         ...state,
         isAuthed: true,
         authedId: action.uid,
       }
     case UNAUTH_USER :
+      console.log('unauth match')
       return {
         ...state,
         isAuthed: false,

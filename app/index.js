@@ -1,18 +1,24 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import getRoutes from './config/routes'
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import users from 'redux/modules/users'
 import thunk from 'redux-thunk'
 import { checkIfAuthed } from './helpers/auth'
+import * as reducers from 'redux/modules'
 
 // middleware is used in redux between when an action is
 // dispatched and the time it hits a reducer
-const store = createStore(users, applyMiddleware(thunk))
+
+//this also addes the chrome redux extension
+
+const store = createStore(combineReducers(reducers), compose(
+  applyMiddleware(thunk),
+  window.devToolsExtension ? window.devToolsExtension() : (f) => f
+))
 
 function checkAuth (nextState, replace) {
-  if (store.getState().isFetching === true) {
+  if (store.getState().users.isFetching === true) {
     return
   }
   const isAuthed = checkIfAuthed(store)
